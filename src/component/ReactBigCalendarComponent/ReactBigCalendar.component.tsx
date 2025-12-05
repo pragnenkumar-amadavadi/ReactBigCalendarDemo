@@ -3,6 +3,7 @@ import {
   type EventProps,
   type NavigateAction,
   type SlotInfo,
+  type ToolbarProps,
 } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
@@ -14,7 +15,6 @@ import {
   TopRow,
   MainTitle,
   DateRangeLabel,
-  AddScheduleButton,
   ControlsRow,
   ButtonGroup,
   NavButton,
@@ -31,32 +31,42 @@ import {
   EventDuration,
   GutterHeaderContainer,
   GutterWrapperContainer,
+  HiddenDatePickerContainer,
 } from "./ReactBigCalendar.styled";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 
-import { Navigate as navigate } from "react-big-calendar";
+import { Navigate as navigate, type ViewStatic } from "react-big-calendar";
+import TimeGrid from "react-big-calendar/lib/TimeGrid";
+import type { DateLocalizer } from "react-big-calendar";
 import {
   ChevronLeft,
   ChevronRight,
   Calendar as CalendarIcon,
-  Plus,
 } from "lucide-react";
 
 const localizer = dayjsLocalizer(dayjs);
 
+import { CustomDatePicker } from "../DatePicker/DatePicker.component";
+
 export interface CustomToolbarProps {
   date: Date;
-  onNavigate: (action: NavigateAction) => void;
+  onNavigate: (action: NavigateAction, newDate?: Date) => void;
 }
 
 // Custom Toolbar Component
 const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
-  const handleAddSchedule = () => {
-    console.log("Add Schedule Clicked");
-  };
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const datePickerAnchor = useRef<HTMLButtonElement>(null);
 
   const handleChooseFromCalendar = () => {
-    console.log("Choose from calendar Clicked");
+    setIsDatePickerOpen(true);
+  };
+
+  const handleDateChange = (newDate: any) => {
+    if (newDate) {
+      onNavigate(navigate.DATE, newDate.toDate());
+      setIsDatePickerOpen(false);
+    }
   };
 
   return (
@@ -67,13 +77,10 @@ const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
         <div>
           <MainTitle>{dayjs(date).format("MMMM YYYY")}</MainTitle>
           <DateRangeLabel>
-            Week of {dayjs(date).startOf("week").format("MMM D")} -{" "}
-            {dayjs(date).endOf("week").format("MMM D")}
+            Week of {dayjs(date).format("MMM D")} -{" "}
+            {dayjs(date).add(7, "day").format("MMM D")}
           </DateRangeLabel>
         </div>
-        <AddScheduleButton onClick={handleAddSchedule}>
-          Add Schedule <Plus size={16} />
-        </AddScheduleButton>
       </TopRow>
 
       <ControlsRow>
@@ -82,20 +89,55 @@ const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
             onClick={() => onNavigate(navigate.PREVIOUS)}
             aria-label="Previous week"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size="1.6rem" />
           </NavButton>
           <NavButton
             onClick={() => onNavigate(navigate.NEXT)}
             aria-label="Next week"
           >
-            <ChevronRight size={16} />
+            <ChevronRight size="1.6rem" />
           </NavButton>
         </ButtonGroup>
 
-        <CalendarPickerButton onClick={handleChooseFromCalendar}>
-          <CalendarIcon size={16} />
+        <CalendarPickerButton
+          ref={datePickerAnchor}
+          onClick={handleChooseFromCalendar}
+        >
+          <CalendarIcon size="1.6rem" />
           Choose from calender
         </CalendarPickerButton>
+
+        {/* Hidden DatePicker */}
+        <HiddenDatePickerContainer>
+          <CustomDatePicker
+            open={isDatePickerOpen}
+            onClose={() => setIsDatePickerOpen(false)}
+            value={dayjs(date)}
+            onChange={handleDateChange}
+            slotProps={{
+              popper: {
+                anchorEl: datePickerAnchor.current,
+                placement: "bottom-start",
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, 10],
+                    },
+                  },
+                  {
+                    name: "flip",
+                    enabled: true,
+                  },
+                  {
+                    name: "preventOverflow",
+                    enabled: true,
+                  },
+                ],
+              },
+            }}
+          />
+        </HiddenDatePickerContainer>
 
         <LegendContainer>
           <LegendItem color="#22d3ee">Booked</LegendItem>
@@ -150,8 +192,93 @@ const CustomEvent = ({ event }: EventProps) => {
   );
 };
 
+interface CustomWeekViewProps {
+  date: Date;
+  localizer: DateLocalizer;
+  max?: Date;
+  min?: Date;
+  scrollToTime?: Date;
+  [key: string]: any;
+}
+
+const CustomWeekView: React.FC<CustomWeekViewProps> & ViewStatic = ({
+  date,
+  localizer,
+  max = localizer.endOf(new Date(), "day"),
+  min = localizer.startOf(new Date(), "day"),
+  scrollToTime = localizer.startOf(new Date(), "day"),
+  ...props
+}) => {
+  const currRange = useMemo(
+    () => CustomWeekView.range(date, { localizer }),
+    [date, localizer]
+  );
+
+  return (
+    <TimeGrid
+      date={date}
+      eventOffset={15}
+      localizer={localizer}
+      max={max}
+      min={min}
+      range={currRange}
+      scrollToTime={scrollToTime}
+      {...props}
+    />
+  );
+};
+
+// 1. Calculate the 7-day range starting from the 'date' passed in
+CustomWeekView.range = (
+  date: Date,
+  { localizer }: { localizer: DateLocalizer }
+) => {
+  const start = date;
+  const end = localizer.add(start, 6, "day");
+
+  let current = start;
+  const range = [];
+
+  while (localizer.lte(current, end, "day")) {
+    range.push(current);
+    current = localizer.add(current, 1, "day");
+  }
+
+  return range;
+};
+
+// 2. Handle Navigation (Next/Prev jumps 7 days)
+CustomWeekView.navigate = (
+  date: Date,
+  action: NavigateAction,
+  { localizer }: { localizer: DateLocalizer }
+) => {
+  switch (action) {
+    case navigate.PREVIOUS:
+      return localizer.add(date, -7, "day");
+
+    case navigate.NEXT:
+      return localizer.add(date, 7, "day");
+
+    default:
+      return date;
+  }
+};
+
+// 3. Set the Title in the toolbar
+CustomWeekView.title = (
+  date: Date,
+  { localizer }: { localizer: DateLocalizer }
+) => {
+  const range = CustomWeekView.range(date, { localizer });
+  return `${localizer.format(range[0], "MMM DD")} - ${localizer.format(
+    range[6],
+    "MMM DD"
+  )}`;
+};
+
 const ReactBigCalendar = () => {
-  const [date, setDate] = useState(new Date(2025, 9, 5)); // Oct 5, 2025 is Sunday
+  const [date, setDate] = useState(new Date());
 
   const events = useMemo(
     () => [
@@ -209,9 +336,18 @@ const ReactBigCalendar = () => {
     console.log("Selected event:", event);
   };
 
+  const { views } = useMemo(
+    () => ({
+      views: {
+        week: CustomWeekView,
+      },
+    }),
+    []
+  );
+
   const components = useMemo(
     () => ({
-      toolbar: CustomToolbar,
+      toolbar: (props: ToolbarProps) => <CustomToolbar {...props} />,
       timeGutterHeader: CustomTimeGutterHeader,
       timeGutterWrapper: CustomTimeGutterWrapper,
       week: {
@@ -232,7 +368,7 @@ const ReactBigCalendar = () => {
         localizer={localizer}
         events={events}
         defaultView={"week"}
-        views={["week"]}
+        views={views}
         step={60}
         timeslots={1}
         date={date}
@@ -243,9 +379,6 @@ const ReactBigCalendar = () => {
         selectable
         min={new Date(0, 0, 0, 0, 0, 0)}
         max={new Date(0, 0, 0, 23, 59, 59)}
-        style={{
-          height: "800px",
-        }}
       />
     </CalendarWrapper>
   );

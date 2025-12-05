@@ -3,25 +3,25 @@ import { Calendar, type CalendarProps } from "react-big-calendar";
 
 // Main Calendar Wrapper
 export const CalendarWrapper = styled("div")(() => ({
-  height: "100%",
+  minHeight: "100%",
   width: "100%",
   backgroundColor: "#000000", // Dark background
   color: "#ffffff",
-  padding: "20px",
+  padding: "2rem",
   boxSizing: "border-box",
   fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
 
   // Customize Scrollbar for the calendar container
   "& ::-webkit-scrollbar": {
-    width: "8px",
-    height: "8px",
+    width: "0.8rem",
+    height: "0.8rem",
   },
   "& ::-webkit-scrollbar-track": {
     background: "#0a0a0a",
   },
   "& ::-webkit-scrollbar-thumb": {
     background: "#333",
-    borderRadius: "4px",
+    borderRadius: "0.4rem",
   },
   "& ::-webkit-scrollbar-thumb:hover": {
     background: "#555",
@@ -29,6 +29,7 @@ export const CalendarWrapper = styled("div")(() => ({
 }));
 
 export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
+  height: "calc(100vh - 4rem)",
   // General Overrides
   "&.rbc-calendar": {
     color: "#9ca3af", // Default text color
@@ -36,12 +37,12 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
 
   // Header (Days of the week)
   ".rbc-header": {
-    padding: "12px 0",
+    padding: "1.2rem 0",
     fontWeight: 500,
     borderBottom: "none",
     borderLeft: "none", // Vertical grid lines
     "& + .rbc-header": {
-      borderLeft: "1px solid #333",
+      borderLeft: "0.1rem solid #333",
     },
     overflow: "visible",
     flexBasis: "14.2857% !important",
@@ -51,8 +52,8 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
 
   // The container for the headers
   ".rbc-time-header-content": {
-    borderLeft: "1px solid #333",
-    marginBottom: "0px",
+    borderLeft: "0.1rem solid #333",
+    marginBottom: "0rem",
   },
 
   // Remove the top border of the time header
@@ -72,34 +73,36 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
       alignItems: "center",
       justifyContent: "center", // Center align time labels
       padding: "0",
-      minHeight: "100px !important", // Force height to match slots
+      minHeight: "10rem !important", // Force height to match slots
     },
   },
 
   // The main grid area
   ".rbc-time-content": {
-    borderTop: "1px solid #333", // Top of the grid
+    borderTop: "0.1rem solid #333", // Top of the grid
     borderLeft: "none", // Handled by gutter right border
 
     // Vertical lines between days
     ".rbc-day-slot": {
-      borderLeft: "1px solid #333",
+      borderLeft: "0.1rem solid #333",
     },
 
     // Horizontal lines (timeslots)
     ".rbc-timeslot-group": {
-      borderBottom: "1px solid #333",
-      minHeight: "100px !important", // Force height to match gutter
+      borderBottom: "0.1rem solid #333",
+      minHeight: "10rem !important", // Force height to match gutter
     },
   },
 
   // Remove default borders
   ".rbc-time-view": {
-    border: "none",
+    border: "0.1rem solid #333",
+    borderRadius: "1rem",
+    overflow: "hidden",
   },
   ".rbc-time-header.rbc-overflowing": {
     borderRight: "none",
-    marginRight: "8px !important", // Match the custom scrollbar width
+    marginRight: "0.8rem !important", // Match the custom scrollbar width
   },
 
   // Fix the header/grid alignment when scrolling
@@ -108,6 +111,7 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
   // Current Time Indicator
   ".rbc-current-time-indicator": {
     backgroundColor: "#22d3ee",
+    display: "none", // Add this line to hide it
   },
 
   // Today highlight
@@ -120,7 +124,7 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
     backgroundColor: "transparent",
     border: "none",
     padding: 0,
-    borderRadius: "4px",
+    borderRadius: "0.4rem",
     "&:focus": {
       outline: "none",
     },
@@ -136,12 +140,12 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
   },
 
   ".rbc-events-container ": {
-    marginRight: "0px",
+    marginRight: "0rem",
   },
 
   ".rbc-event-container": {
     borderTop: "none",
-    borderRight: "2px solid #1AFFFF1A",
+    borderRight: "0.2rem solid #1AFFFF1A",
   },
 
   ".rbc-allday-cell": {
@@ -153,7 +157,7 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
   },
 
   ".rbc-time-slot": {
-    borderTop: "1px solid #333",
+    borderTop: "0.1rem solid #333",
 
     "&:first-of-type": {
       borderTop: "none",
@@ -166,15 +170,15 @@ export const StyleReactBigCalendar = styled(Calendar)<CalendarProps>(() => ({
 export const ToolbarContainer = styled("div")({
   display: "flex",
   flexDirection: "column",
-  gap: "16px",
-  marginBottom: "24px",
+  gap: "1.6rem",
+  marginBottom: "2.4rem",
   backgroundColor: "#000000",
 });
 
 export const SectionTitle = styled("div")({
   fontSize: "0.875rem",
   color: "#9ca3af",
-  marginBottom: "4px",
+  marginBottom: "0.4rem",
 });
 
 export const TopRow = styled("div")({
@@ -195,47 +199,30 @@ export const MainTitle = styled("h2")({
 export const DateRangeLabel = styled("div")({
   fontSize: "0.875rem",
   color: "#9ca3af",
-  marginTop: "8px",
+  marginTop: "0.8rem",
 });
 
-export const AddScheduleButton = styled("button")({
-  backgroundColor: "#22d3ee",
-  color: "#000000",
-  border: "none",
-  borderRadius: "6px",
-  padding: "10px 20px",
-  fontSize: "0.875rem",
-  fontWeight: 600,
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  gap: "6px",
-  transition: "background-color 0.2s",
-  "&:hover": {
-    backgroundColor: "#67e8f9",
-  },
-});
 
 export const ControlsRow = styled("div")({
   display: "flex",
   alignItems: "center",
-  gap: "12px",
-  marginTop: "12px",
+  gap: "1.2rem",
+  marginTop: "1.2rem",
 });
 
 export const ButtonGroup = styled("div")({
   display: "flex",
   backgroundColor: "#1f1f1f",
-  borderRadius: "6px",
-  padding: "4px",
-  border: "1px solid #333",
+  borderRadius: "0.6rem",
+  padding: "0.4rem",
+  border: "0.1rem solid #333",
 });
 
 export const NavButton = styled("button")({
   backgroundColor: "transparent",
   border: "none",
   color: "#9ca3af",
-  padding: "6px 10px",
+  padding: "0.6rem 1rem",
   cursor: "pointer",
   display: "flex",
   alignItems: "center",
@@ -247,14 +234,14 @@ export const NavButton = styled("button")({
 
 export const CalendarPickerButton = styled("button")({
   backgroundColor: "#1f1f1f",
-  border: "1px solid #333",
-  borderRadius: "6px",
+  border: "0.1rem solid #333",
+  borderRadius: "0.6rem",
   color: "#9ca3af",
-  padding: "8px 16px",
+  padding: "0.8rem 1.6rem",
   fontSize: "0.875rem",
   display: "flex",
   alignItems: "center",
-  gap: "8px",
+  gap: "0.8rem",
   cursor: "pointer",
   "&:hover": {
     borderColor: "#555",
@@ -262,31 +249,36 @@ export const CalendarPickerButton = styled("button")({
   },
 });
 
+export const HiddenDatePickerContainer = styled("div")({
+  position: "absolute",
+  visibility: "hidden",
+});
+
 export const LegendContainer = styled("div")({
   display: "flex",
   alignItems: "center",
-  gap: "16px",
+  gap: "1.6rem",
   backgroundColor: "#1f1f1f",
-  padding: "8px 16px",
-  borderRadius: "6px",
-  border: "1px solid #333",
-  marginLeft: "0px", // Reset margin
+  padding: "0.8rem 1.6rem",
+  borderRadius: "0.6rem",
+  border: "0.1rem solid #333",
+  marginLeft: "0rem", // Reset margin
 });
 
 export const LegendItem = styled("div")<{ color: string }>(({ color }) => ({
   display: "flex",
   alignItems: "center",
-  gap: "8px",
+  gap: "0.8rem",
   fontSize: "0.875rem",
   color: "#9ca3af",
   "&::before": {
     content: '""',
     display: "block",
-    width: "12px",
-    height: "12px",
-    borderRadius: "3px",
+    width: "1.2rem",
+    height: "1.2rem",
+    borderRadius: "0.3rem",
     backgroundColor: "transparent",
-    border: `2px solid ${color}`,
+    border: `0.2rem solid ${color}`,
   },
 }));
 
@@ -297,7 +289,7 @@ export const HeaderContainer = styled("div")({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  padding: "8px 0",
+  padding: "0.8rem 0",
   height: "100%",
   backgroundColor: "#0a0a0a",
 });
@@ -307,7 +299,7 @@ export const HeaderDate = styled("span")({
   fontWeight: 600,
   color: "#ffffff",
   lineHeight: 1.2,
-  marginBottom: "4px",
+  marginBottom: "0.4rem",
 });
 
 export const HeaderDay = styled("span")({
@@ -321,26 +313,26 @@ export const HeaderDay = styled("span")({
 export const EventContainer = styled("div")({
   width: "100%",
   height: "100%",
-  padding: "0px",
+  padding: "0rem",
   display: "flex",
 });
 
 export const EventCard = styled("div")({
   width: "100%",
   height: "100%",
-  borderLeft: "3px solid #22d3ee", // Left border based on image
+  borderLeft: "0.3rem solid #22d3ee", // Left border based on image
   // Actually image shows the box has a background.
   // Let's try a subtle background with a stronger indicator if needed.
   // The image shows a solid block.
   backgroundColor: "#0e2a2e", // Very dark teal
-  borderRadius: "0 4px 4px 0", // Square left corners for the border
+  borderRadius: "0 0.4rem 0.4rem 0", // Square left corners for the border
   color: "#ffffff",
   display: "flex",
   flexDirection: "column",
   alignItems: "center", // Center content horizontally
   justifyContent: "center", // Center content vertically
-  gap: "6px",
-  padding: "8px",
+  gap: "0.6rem",
+  padding: "0.8rem",
   cursor: "pointer",
   transition: "background-color 0.2s",
   boxSizing: "border-box",
@@ -354,9 +346,9 @@ export const EventPill = styled("div")({
   color: "#22d3ee",
   fontSize: "0.7rem",
   fontWeight: 600,
-  padding: "2px 8px",
-  borderRadius: "12px",
-  marginBottom: "4px",
+  padding: "0.2rem 0.8rem",
+  borderRadius: "1.2rem",
+  marginBottom: "0.4rem",
 });
 
 export const EventTime = styled("div")({
@@ -369,7 +361,7 @@ export const EventTime = styled("div")({
 export const EventDuration = styled("div")({
   fontSize: "0.7rem",
   color: "#9ca3af",
-  marginTop: "2px",
+  marginTop: "0.2rem",
 });
 
 // --- Custom Time Gutter Components ---
