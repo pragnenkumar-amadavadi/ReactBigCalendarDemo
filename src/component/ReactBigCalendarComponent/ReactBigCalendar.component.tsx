@@ -3,7 +3,9 @@ import {
   type EventProps,
   type NavigateAction,
   type SlotInfo,
-  type ToolbarProps,
+  type DateLocalizer,
+  Navigate as navigate,
+  type TitleOptions,
 } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
@@ -11,33 +13,14 @@ import {
   StyleReactBigCalendar,
   CalendarWrapper,
   ToolbarContainer,
-  SectionTitle,
-  TopRow,
-  MainTitle,
-  DateRangeLabel,
-  ControlsRow,
-  ButtonGroup,
-  NavButton,
-  CalendarPickerButton,
-  LegendContainer,
-  LegendItem,
   HeaderContainer,
-  HeaderDate,
-  HeaderDay,
   EventContainer,
-  EventCard,
-  EventPill,
-  EventTime,
-  EventDuration,
   GutterHeaderContainer,
   GutterWrapperContainer,
-  HiddenDatePickerContainer,
 } from "./ReactBigCalendar.styled";
-import { useMemo, useState, useRef } from "react";
-
-import { Navigate as navigate, type ViewStatic } from "react-big-calendar";
+import { useMemo, useState, useRef, useEffect } from "react";
+// @ts-expect-error TimeGrid does not have types exported directly
 import TimeGrid from "react-big-calendar/lib/TimeGrid";
-import type { DateLocalizer } from "react-big-calendar";
 import {
   ChevronLeft,
   ChevronRight,
@@ -57,12 +40,18 @@ export interface CustomToolbarProps {
 const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const datePickerAnchor = useRef<HTMLButtonElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  // Sync ref to state to safely use in render
+  useEffect(() => {
+    setAnchorEl(datePickerAnchor.current);
+  }, []);
 
   const handleChooseFromCalendar = () => {
     setIsDatePickerOpen(true);
   };
 
-  const handleDateChange = (newDate: any) => {
+  const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     if (newDate) {
       onNavigate(navigate.DATE, newDate.toDate());
       setIsDatePickerOpen(false);
@@ -71,44 +60,44 @@ const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
 
   return (
     <ToolbarContainer>
-      <SectionTitle>Schedule Availability</SectionTitle>
-
-      <TopRow>
+      <div className="toolbar-top-row">
         <div>
-          <MainTitle>{dayjs(date).format("MMMM YYYY")}</MainTitle>
-          <DateRangeLabel>
+          <div className="section-title">Schedule Availability</div>
+          <h2>{dayjs(date).format("MMMM YYYY")}</h2>
+          <div className="date-range-label">
             Week of {dayjs(date).format("MMM D")} -{" "}
             {dayjs(date).add(7, "day").format("MMM D")}
-          </DateRangeLabel>
+          </div>
         </div>
-      </TopRow>
+      </div>
 
-      <ControlsRow>
-        <ButtonGroup>
-          <NavButton
+      <div className="toolbar-controls-row">
+        <div className="button-group">
+          <button
             onClick={() => onNavigate(navigate.PREVIOUS)}
             aria-label="Previous week"
           >
             <ChevronLeft size="1.6rem" />
-          </NavButton>
-          <NavButton
+          </button>
+          <button
             onClick={() => onNavigate(navigate.NEXT)}
             aria-label="Next week"
           >
             <ChevronRight size="1.6rem" />
-          </NavButton>
-        </ButtonGroup>
+          </button>
+        </div>
 
-        <CalendarPickerButton
+        <button
           ref={datePickerAnchor}
+          className="calendar-picker-btn"
           onClick={handleChooseFromCalendar}
         >
           <CalendarIcon size="1.6rem" />
           Choose from calender
-        </CalendarPickerButton>
+        </button>
 
         {/* Hidden DatePicker */}
-        <HiddenDatePickerContainer>
+        <div className="hidden-datepicker">
           <CustomDatePicker
             open={isDatePickerOpen}
             onClose={() => setIsDatePickerOpen(false)}
@@ -116,7 +105,7 @@ const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
             onChange={handleDateChange}
             slotProps={{
               popper: {
-                anchorEl: datePickerAnchor.current,
+                anchorEl: anchorEl,
                 placement: "bottom-start",
                 modifiers: [
                   {
@@ -137,13 +126,13 @@ const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
               },
             }}
           />
-        </HiddenDatePickerContainer>
+        </div>
 
-        <LegendContainer>
-          <LegendItem color="#22d3ee">Booked</LegendItem>
-          <LegendItem color="#525252">Available</LegendItem>
-        </LegendContainer>
-      </ControlsRow>
+        <div className="legend-container">
+          <div className="legend-item booked">Booked</div>
+          <div className="legend-item available">Available</div>
+        </div>
+      </div>
     </ToolbarContainer>
   );
 };
@@ -152,8 +141,8 @@ const CustomToolbar = ({ date, onNavigate }: CustomToolbarProps) => {
 const CustomDateHeader = ({ date }: { date: Date }) => {
   return (
     <HeaderContainer>
-      <HeaderDate>{dayjs(date).format("DD MMM")}</HeaderDate>
-      <HeaderDay>{dayjs(date).format("ddd")}</HeaderDay>
+      <span className="header-date">{dayjs(date).format("DD MMM")}</span>
+      <span className="header-day">{dayjs(date).format("ddd")}</span>
     </HeaderContainer>
   );
 };
@@ -181,13 +170,13 @@ const CustomEvent = ({ event }: EventProps) => {
 
   return (
     <EventContainer>
-      <EventCard>
-        <EventPill>Scheduled</EventPill>
-        <EventTime>
+      <div className="event-card">
+        <div className="event-pill">Scheduled</div>
+        <div className="event-time">
           {start.format("hh:mm A")} - {end.format("hh:mm A")}
-        </EventTime>
-        <EventDuration>{duration} Hours</EventDuration>
-      </EventCard>
+        </div>
+        <div className="event-duration">{duration} Hours</div>
+      </div>
     </EventContainer>
   );
 };
@@ -198,10 +187,21 @@ interface CustomWeekViewProps {
   max?: Date;
   min?: Date;
   scrollToTime?: Date;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-const CustomWeekView: React.FC<CustomWeekViewProps> & ViewStatic = ({
+// Define an interface that extends the component type with static methods
+interface CustomWeekViewStatic extends React.FC<CustomWeekViewProps> {
+  range: (date: Date, { localizer }: { localizer: DateLocalizer }) => Date[];
+  navigate: (
+    date: Date,
+    action: NavigateAction,
+    { localizer }: { localizer: DateLocalizer }
+  ) => Date;
+  title: (date: Date, options: TitleOptions) => string;
+}
+
+const CustomWeekView: CustomWeekViewStatic = ({
   date,
   localizer,
   max = localizer.endOf(new Date(), "day"),
@@ -266,10 +266,9 @@ CustomWeekView.navigate = (
 };
 
 // 3. Set the Title in the toolbar
-CustomWeekView.title = (
-  date: Date,
-  { localizer }: { localizer: DateLocalizer }
-) => {
+CustomWeekView.title = (date: Date, options: TitleOptions) => {
+  // Cast options to unknown first to avoid type overlap error
+  const { localizer } = options as unknown as { localizer: DateLocalizer };
   const range = CustomWeekView.range(date, { localizer });
   return `${localizer.format(range[0], "MMM DD")} - ${localizer.format(
     range[6],
@@ -347,7 +346,7 @@ const ReactBigCalendar = () => {
 
   const components = useMemo(
     () => ({
-      toolbar: (props: ToolbarProps) => <CustomToolbar {...props} />,
+      toolbar: CustomToolbar,
       timeGutterHeader: CustomTimeGutterHeader,
       timeGutterWrapper: CustomTimeGutterWrapper,
       week: {

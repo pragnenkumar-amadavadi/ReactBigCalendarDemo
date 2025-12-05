@@ -173,113 +173,120 @@ export const ToolbarContainer = styled("div")({
   gap: "1.6rem",
   marginBottom: "2.4rem",
   backgroundColor: "#000000",
-});
 
-export const SectionTitle = styled("div")({
-  fontSize: "0.875rem",
-  color: "#9ca3af",
-  marginBottom: "0.4rem",
-});
+  // Top Row Section
+  "& .toolbar-top-row": {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
 
-export const TopRow = styled("div")({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
-});
+    "& .section-title": {
+      fontSize: "0.875rem",
+      color: "#9ca3af",
+      marginBottom: "0.4rem",
+    },
 
-export const MainTitle = styled("h2")({
-  margin: 0,
-  fontSize: "2rem", // Larger as per image
-  fontWeight: 600,
-  color: "#ffffff",
-  lineHeight: 1,
-});
+    "& h2": {
+      margin: 0,
+      fontSize: "2rem", // Larger as per image
+      fontWeight: 600,
+      color: "#ffffff",
+      lineHeight: 1,
+    },
 
-export const DateRangeLabel = styled("div")({
-  fontSize: "0.875rem",
-  color: "#9ca3af",
-  marginTop: "0.8rem",
-});
+    "& .date-range-label": {
+      fontSize: "0.875rem",
+      color: "#9ca3af",
+      marginTop: "0.8rem",
+    },
+  },
 
-export const ControlsRow = styled("div")({
-  display: "flex",
-  alignItems: "center",
-  gap: "1.2rem",
-  marginTop: "1.2rem",
-});
+  // Controls Row Section
+  "& .toolbar-controls-row": {
+    display: "flex",
+    alignItems: "center",
+    gap: "1.2rem",
+    marginTop: "1.2rem",
 
-export const ButtonGroup = styled("div")({
-  display: "flex",
-  backgroundColor: "#1f1f1f",
-  borderRadius: "0.6rem",
-  padding: "0.4rem",
-  border: "0.1rem solid #333",
-});
+    "& .button-group": {
+      display: "flex",
+      backgroundColor: "#1f1f1f",
+      borderRadius: "0.6rem",
+      padding: "0.4rem",
+      border: "0.1rem solid #333",
 
-export const NavButton = styled("button")({
-  backgroundColor: "transparent",
-  border: "none",
-  color: "#9ca3af",
-  padding: "0.6rem 1rem",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  "&:hover": {
-    color: "#ffffff",
+      "& button": {
+        backgroundColor: "transparent",
+        border: "none",
+        color: "#9ca3af",
+        padding: "0.6rem 1rem",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        "&:hover": {
+          color: "#ffffff",
+        },
+      },
+    },
+
+    "& .calendar-picker-btn": {
+      backgroundColor: "#1f1f1f",
+      border: "0.1rem solid #333",
+      borderRadius: "0.6rem",
+      color: "#9ca3af",
+      padding: "0.8rem 1.6rem",
+      fontSize: "0.875rem",
+      display: "flex",
+      alignItems: "center",
+      gap: "0.8rem",
+      cursor: "pointer",
+      "&:hover": {
+        borderColor: "#555",
+        color: "#ffffff",
+      },
+    },
+
+    "& .hidden-datepicker": {
+      position: "absolute",
+      visibility: "hidden",
+    },
+
+    "& .legend-container": {
+      display: "flex",
+      alignItems: "center",
+      gap: "1.6rem",
+      backgroundColor: "#1f1f1f",
+      padding: "0.8rem 1.6rem",
+      borderRadius: "0.6rem",
+      border: "0.1rem solid #333",
+      marginLeft: "0rem",
+
+      "& .legend-item": {
+        display: "flex",
+        alignItems: "center",
+        gap: "0.8rem",
+        fontSize: "0.875rem",
+        color: "#9ca3af",
+        "&::before": {
+          content: '""',
+          display: "block",
+          width: "1.2rem",
+          height: "1.2rem",
+          borderRadius: "0.3rem",
+          backgroundColor: "transparent",
+        },
+        "&.booked::before": {
+          border: "0.2rem solid #22d3ee",
+        },
+        "&.available::before": {
+          border: "0.2rem solid #525252",
+        },
+      },
+    },
   },
 });
-
-export const CalendarPickerButton = styled("button")({
-  backgroundColor: "#1f1f1f",
-  border: "0.1rem solid #333",
-  borderRadius: "0.6rem",
-  color: "#9ca3af",
-  padding: "0.8rem 1.6rem",
-  fontSize: "0.875rem",
-  display: "flex",
-  alignItems: "center",
-  gap: "0.8rem",
-  cursor: "pointer",
-  "&:hover": {
-    borderColor: "#555",
-    color: "#ffffff",
-  },
-});
-
-export const HiddenDatePickerContainer = styled("div")({
-  position: "absolute",
-  visibility: "hidden",
-});
-
-export const LegendContainer = styled("div")({
-  display: "flex",
-  alignItems: "center",
-  gap: "1.6rem",
-  backgroundColor: "#1f1f1f",
-  padding: "0.8rem 1.6rem",
-  borderRadius: "0.6rem",
-  border: "0.1rem solid #333",
-  marginLeft: "0rem", // Reset margin
-});
-
-export const LegendItem = styled("div")<{ color: string }>(({ color }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: "0.8rem",
-  fontSize: "0.875rem",
-  color: "#9ca3af",
-  "&::before": {
-    content: '""',
-    display: "block",
-    width: "1.2rem",
-    height: "1.2rem",
-    borderRadius: "0.3rem",
-    backgroundColor: "transparent",
-    border: `0.2rem solid ${color}`,
-  },
-}));
 
 // --- Custom Header Component Styles ---
 
@@ -291,20 +298,20 @@ export const HeaderContainer = styled("div")({
   padding: "0.8rem 0",
   height: "100%",
   backgroundColor: "#0a0a0a",
-});
 
-export const HeaderDate = styled("span")({
-  fontSize: "1.1rem",
-  fontWeight: 600,
-  color: "#ffffff",
-  lineHeight: 1.2,
-  marginBottom: "0.4rem",
-});
+  "& .header-date": {
+    fontSize: "1.1rem",
+    fontWeight: 600,
+    color: "#ffffff",
+    lineHeight: 1.2,
+    marginBottom: "0.4rem",
+  },
 
-export const HeaderDay = styled("span")({
-  fontSize: "0.875rem",
-  fontWeight: 500,
-  color: "#9ca3af",
+  "& .header-day": {
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    color: "#9ca3af",
+  },
 });
 
 // --- Custom Event Component Styles ---
@@ -314,53 +321,51 @@ export const EventContainer = styled("div")({
   height: "100%",
   padding: "0rem",
   display: "flex",
-});
 
-export const EventCard = styled("div")({
-  width: "100%",
-  height: "100%",
-  borderLeft: "0.3rem solid #22d3ee", // Left border based on image
-  // Actually image shows the box has a background.
-  // Let's try a subtle background with a stronger indicator if needed.
-  // The image shows a solid block.
-  backgroundColor: "#0e2a2e", // Very dark teal
-  borderRadius: "0 0.4rem 0.4rem 0", // Square left corners for the border
-  color: "#ffffff",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center", // Center content horizontally
-  justifyContent: "center", // Center content vertically
-  gap: "0.6rem",
-  padding: "0.8rem",
-  cursor: "pointer",
-  transition: "background-color 0.2s",
-  boxSizing: "border-box",
-  "&:hover": {
-    backgroundColor: "#13383d",
+  "& .event-card": {
+    width: "100%",
+    height: "100%",
+    borderLeft: "0.3rem solid #22d3ee",
+    backgroundColor: "#0e2a2e", // Very dark teal
+    borderRadius: "0 0.4rem 0.4rem 0",
+    color: "#ffffff",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.6rem",
+    padding: "0.8rem",
+    cursor: "pointer",
+    transition: "background-color 0.2s",
+    boxSizing: "border-box",
+
+    "&:hover": {
+      backgroundColor: "#13383d",
+    },
+
+    "& .event-pill": {
+      backgroundColor: "rgba(34, 211, 238, 0.1)",
+      color: "#22d3ee",
+      fontSize: "0.7rem",
+      fontWeight: 600,
+      padding: "0.2rem 0.8rem",
+      borderRadius: "1.2rem",
+      marginBottom: "0.4rem",
+    },
+
+    "& .event-time": {
+      fontSize: "0.75rem",
+      fontWeight: 500,
+      color: "#ffffff",
+      textAlign: "center",
+    },
+
+    "& .event-duration": {
+      fontSize: "0.7rem",
+      color: "#9ca3af",
+      marginTop: "0.2rem",
+    },
   },
-});
-
-export const EventPill = styled("div")({
-  backgroundColor: "rgba(34, 211, 238, 0.1)",
-  color: "#22d3ee",
-  fontSize: "0.7rem",
-  fontWeight: 600,
-  padding: "0.2rem 0.8rem",
-  borderRadius: "1.2rem",
-  marginBottom: "0.4rem",
-});
-
-export const EventTime = styled("div")({
-  fontSize: "0.75rem",
-  fontWeight: 500,
-  color: "#ffffff",
-  textAlign: "center",
-});
-
-export const EventDuration = styled("div")({
-  fontSize: "0.7rem",
-  color: "#9ca3af",
-  marginTop: "0.2rem",
 });
 
 // --- Custom Time Gutter Components ---
