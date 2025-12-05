@@ -202,7 +202,6 @@ export const DateRangeLabel = styled("div")({
   marginTop: "0.8rem",
 });
 
-
 export const ControlsRow = styled("div")({
   display: "flex",
   alignItems: "center",
